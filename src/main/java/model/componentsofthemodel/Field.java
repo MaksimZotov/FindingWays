@@ -1,4 +1,4 @@
-package model.componentsofthemodel.componentsofthemodel;
+package model.componentsofthemodel;
 
 import java.util.ArrayList;
 

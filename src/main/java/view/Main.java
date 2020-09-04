@@ -1,9 +1,10 @@
 package view;
 
-import model.componentsofthemodel.componentsofthemodel.ModelOfFindingWaysToOfflineMode;
-import model.componentsofthemodel.componentsofthemodel.ModelOfFindingWaysToOnlineMode;
-import model.componentsofthemodel.componentsofthemodel.commitments.StateCommitments;
-import model.componentsofthemodel.componentsofthemodel.commitments.ModelOfFindingWaysCommitments;
+import model.componentsofthemodel.ModelOfFindingWaysToOfflineMode;
+import model.componentsofthemodel.ModelOfFindingWaysToOnlineMode;
+import model.componentsofthemodel.State;
+import model.componentsofthemodel.commitments.StateCommitments;
+import model.componentsofthemodel.commitments.ModelOfFindingWaysCommitments;
 import controller.commitments.ViewCommitments;
 
 import javafx.application.Application;
@@ -36,7 +37,7 @@ public class Main extends Application implements ViewCommitments {
 
     @Override
     public void getUpdatedDataAboutTheModel(Object data) {
-        StateCommitments state = ((ModelOfFindingWaysCommitments) data).getState();
+        StateCommitments state = ((State) data);
 
         int numberOfCurrentWay = state.getNumberOfCurrentWay();
         int quantityOfWays = state.getQuantityOfWays();

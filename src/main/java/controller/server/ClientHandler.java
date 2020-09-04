@@ -9,12 +9,12 @@ public class ClientHandler extends Thread {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private AbstractSession abstractSession;
+    private AbstractSession session;
     private int id;
 
-    public ClientHandler(Socket socket, AbstractSession abstractSession, int id) {
+    public ClientHandler(Socket socket, AbstractSession session, int id) {
         this.socket = socket;
-        this.abstractSession = abstractSession;
+        this.session = session;
         this.id = id;
         try {
             in = new ObjectInputStream(socket.getInputStream());
@@ -38,7 +38,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public void setAbstractSession(AbstractSession abstractSession) { this.abstractSession = abstractSession; }
+    public void setSession(AbstractSession session) { this.session = session; }
 
     public int getClientId() { return id; }
 
@@ -47,7 +47,7 @@ public class ClientHandler extends Thread {
         try {
             while (true) {
                 data = in.readObject();
-                abstractSession.handleDataFromClient(data, id);
+                session.handleDataFromClient(data, id);
             }
         }
         catch (IOException | ClassNotFoundException e) {

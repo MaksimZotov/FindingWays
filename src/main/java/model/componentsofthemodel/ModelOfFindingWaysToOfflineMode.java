@@ -1,10 +1,9 @@
-package model.componentsofthemodel.componentsofthemodel;
+package model.componentsofthemodel;
 
 import java.util.function.Supplier;
 
 import controller.commitments.ViewCommitments;
-import model.componentsofthemodel.componentsofthemodel.commitments.ModelOfFindingWaysCommitments;
-import model.componentsofthemodel.componentsofthemodel.commitments.StateCommitments;
+import model.componentsofthemodel.commitments.ModelOfFindingWaysCommitments;
 
 import java.util.ArrayList;
 
@@ -15,15 +14,15 @@ public class ModelOfFindingWaysToOfflineMode implements ModelOfFindingWaysCommit
     Field field;
 
     public ModelOfFindingWaysToOfflineMode(ViewCommitments viewCommitments) {
-        counter = new Counter();
+        counter = new Counter(state);
+        state = new State(counter.getQuantityOfWays(), counter.getNumberOfCurrentWay());
         this.viewCommitments = viewCommitments;
     }
 
     @Override
     public void createField(int height, int width, int maxNumberOfMoves) {
         field = new Field(height, width, maxNumberOfMoves);
-        counter.setField(field);
-        state = new State(field);
+        state.setField(field);
         sendUpdatedInfoToApplication();
     }
 
@@ -50,8 +49,7 @@ public class ModelOfFindingWaysToOfflineMode implements ModelOfFindingWaysCommit
     }
 
     @Override
-    public StateCommitments getState() {
-        state.init(counter.getQuantityOfWays(), counter.getNumberOfCurrentWay());
+    public State getState() {
         return state;
     }
 
@@ -65,6 +63,6 @@ public class ModelOfFindingWaysToOfflineMode implements ModelOfFindingWaysCommit
     }
 
     private void sendUpdatedInfoToApplication() {
-        viewCommitments.getUpdatedDataAboutTheModel(this);
+        viewCommitments.getUpdatedDataAboutTheModel(state);
     }
 }

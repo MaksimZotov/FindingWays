@@ -1,11 +1,10 @@
-package model.componentsofthemodel.componentsofthemodel;
+package model.componentsofthemodel;
 
 import java.io.*;
 
 import controller.client.Client;
 import controller.commitments.ViewCommitments;
-import model.componentsofthemodel.componentsofthemodel.commitments.ModelOfFindingWaysCommitments;
-import model.componentsofthemodel.componentsofthemodel.commitments.StateCommitments;
+import model.componentsofthemodel.commitments.ModelOfFindingWaysCommitments;
 
 public class ModelOfFindingWaysToOnlineMode implements ModelOfFindingWaysCommitments {
     private Client client;
@@ -55,7 +54,14 @@ public class ModelOfFindingWaysToOnlineMode implements ModelOfFindingWaysCommitm
     }
 
     @Override
-    public StateCommitments getState() {
+    public State getState() {
+        try {
+            throw new Exception("When you work online, you can't directly get the model state. " +
+                    "You have to wait until you receive information about the model state from the server. " +
+                    "A class ClientReader is responsible for processing information from the server");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

@@ -1,19 +1,25 @@
-package model.componentsofthemodel.componentsofthemodel;
+package model.componentsofthemodel;
 
-import model.componentsofthemodel.componentsofthemodel.commitments.StateCommitments;
+import model.componentsofthemodel.commitments.StateCommitments;
 
 public class State implements StateCommitments {
-    Field field;
-    private int quantityOfWays;
-    private int numberOfCurrentWay;
+    private Field field;
+    private Integer quantityOfWays;
+    private Integer numberOfCurrentWay;
 
-    State(Field field) {
+    State(Integer quantityOfWays, Integer numberOfCurrentWay) {
+        this.quantityOfWays = quantityOfWays;
+        this.numberOfCurrentWay = numberOfCurrentWay;
+    }
+
+    @Override
+    public void setField(Field field) {
         this.field = field;
     }
 
-    void init(int quantityOfWays, int numberOfCurrentWay) {
-        this.quantityOfWays = quantityOfWays;
-        this.numberOfCurrentWay = numberOfCurrentWay;
+    @Override
+    public Field getField() {
+        return field;
     }
 
     @Override

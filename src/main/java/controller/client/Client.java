@@ -20,7 +20,7 @@ public class Client {
     }
 
     public void createConnection() throws IOException {
-        clientSocket = new Socket("localhost", 6666);
+        clientSocket = new Socket("localhost", port);
         out = new ObjectOutputStream(clientSocket.getOutputStream());
         in = new ObjectInputStream(clientSocket.getInputStream());
         sender = new ClientSender(out);

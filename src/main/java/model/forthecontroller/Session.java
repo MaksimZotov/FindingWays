@@ -1,7 +1,7 @@
 package model.forthecontroller;
 
 import controller.commitments.AbstractSession;
-import model.componentsofthemodel.componentsofthemodel.commitments.ModelOfFindingWaysCommitments;
+import model.componentsofthemodel.commitments.ModelOfFindingWaysCommitments;
 
 import java.io.IOException;
 

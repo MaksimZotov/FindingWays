@@ -1,4 +1,6 @@
-package model.componentsofthemodel.componentsofthemodel.commitments;
+package model.componentsofthemodel.commitments;
+
+import model.componentsofthemodel.State;
 
 import java.io.IOException;
 
@@ -8,5 +10,5 @@ public interface ModelOfFindingWaysCommitments {
     void showNextCalculatedWay();
     void showPreviousCalculatedWay();
     void setNumberOfCell(int row, int column, int number);
-    StateCommitments getState();
+    State getState();
 }

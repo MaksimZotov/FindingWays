@@ -1,8 +1,8 @@
-package model.componentsofthemodel.algorithms.implementations;
+package model.algorithms.implementations;
 
-import model.componentsofthemodel.algorithms.commitments.AlgorithmCommitments;
-import model.componentsofthemodel.componentsofthemodel.Cell;
-import model.componentsofthemodel.componentsofthemodel.Field;
+import model.algorithms.commitments.AlgorithmCommitments;
+import model.componentsofthemodel.Cell;
+import model.componentsofthemodel.Field;
 
 import java.util.ArrayList;
 

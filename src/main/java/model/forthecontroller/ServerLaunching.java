@@ -1,10 +1,9 @@
 package model.forthecontroller;
 
-import controller.server.Launching;
+import controller.server.Server;
 
 public class ServerLaunching {
     public static void main(String[] args) {
-        Launching launching = new Launching();
-        launching.launch(666);
+        new Server(new SessionManager(), 666).main();
     }
 }
