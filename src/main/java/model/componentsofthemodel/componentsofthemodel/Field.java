@@ -1,4 +1,4 @@
-package model;
+package model.componentsofthemodel.componentsofthemodel;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ public class Field {
     private int height;
     private int width;
 
-    Field(int height, int width, int maxNumberOfMoves) {
+    public Field(int height, int width, int maxNumberOfMoves) {
         this.height = height;
         this.width = width;
 
@@ -20,10 +20,10 @@ public class Field {
         }
     }
 
-    void setWhiteColorForAllCells() {
+    void setThatAllCellsAreNotPartOfTheWay() {
         for (ArrayList<Cell> row : field) {
             for (Cell cell : row) {
-                cell.setColor(Color.WHITE);
+                cell.setIsItPartOfTheWay(false);
             }
         }
     }
