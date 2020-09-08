@@ -1,11 +1,10 @@
 package view;
 
-import model.componentsofthemodel.ModelOfFindingWaysToOfflineMode;
-import model.componentsofthemodel.ModelOfFindingWaysToOnlineMode;
-import model.componentsofthemodel.State;
-import model.componentsofthemodel.commitments.StateCommitments;
-import model.componentsofthemodel.commitments.ModelOfFindingWaysCommitments;
+import model.state.commitments.StateCommitments;
+import controller.commitments.StateEditorCommitments;
 import controller.commitments.ViewCommitments;
+import model.state.StateEditor;
+import model.state.State;
 
 import javafx.application.Application;
 import javafx.scene.paint.Paint;
@@ -13,17 +12,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
-
 public class Main extends Application implements ViewCommitments {
-    private boolean isOnlineMode;
-
-    private ModelOfFindingWaysCommitments model;
-    private FieldVisualisation fieldVisualisation;
-
-    private int height;
-    private int width;
+    private StateEditorCommitments stateEditor;
+    private StateVisualisation stateVisualisation;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -31,21 +22,23 @@ public class Main extends Application implements ViewCommitments {
 
     @Override
     public void start(Stage stage) {
-        model = (isOnlineMode) ? new ModelOfFindingWaysToOnlineMode(this) : new ModelOfFindingWaysToOfflineMode(this);
+        stateEditor = new StateEditor(this);
         //...
     }
 
     @Override
     public void getUpdatedDataAboutTheModel(Object data) {
+        if (data instanceof Error) {
+            //...
+        }
         StateCommitments state = ((State) data);
 
-        int numberOfCurrentWay = state.getNumberOfCurrentWay();
         int quantityOfWays = state.getQuantityOfWays();
 
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Rectangle rectangleOfCell = fieldVisualisation.getRectanglesOfCells().get(i).get(j);
-                Text textWithNumberOfCell = fieldVisualisation.getNumbersOfCells().get(i).get(j);
+        for (int i = 0; i < state.getFieldHeight(); i++) {
+            for (int j = 0; j < state.getFieldWeight(); j++) {
+                Rectangle rectangleOfCell = stateVisualisation.getRectanglesOfCells().get(i).get(j);
+                Text textWithNumberOfCell = stateVisualisation.getNumbersOfCells().get(i).get(j);
 
                 Paint paint = (state.getCellIsItPartOfTheWay(i, j)) ? Paint.valueOf("white") : Paint.valueOf("yellow");
 
@@ -55,24 +48,24 @@ public class Main extends Application implements ViewCommitments {
         }
     }
 
-    private void createField(int height, int width, int maxNumberOfMoves) throws IOException {
-        model.createField(height, width, maxNumberOfMoves);
-        fieldVisualisation = new FieldVisualisation(height, width);
+    private void createField(int height, int width, int maxNumberOfMoves) {
+        stateEditor.createField(height, width, maxNumberOfMoves);
+        stateVisualisation = new StateVisualisation(height, width);
     }
 
     private void setNumberOfCell(int row, int column, int number) {
-        model.setNumberOfCell(row, column, number);
+        stateEditor.setNumberOfCell(row, column, number);
     }
 
     private void calculateWays() {
-        model.calculateWays();
+        stateEditor.calculateWays();
     }
 
     public void showNextCalculatedWay() {
-        model.showNextCalculatedWay();
+        stateEditor.showNextCalculatedWay();
     }
 
     public void showPreviousCalculatedWay() {
-        model.showPreviousCalculatedWay();
+        stateEditor.showPreviousCalculatedWay();
     }
 }

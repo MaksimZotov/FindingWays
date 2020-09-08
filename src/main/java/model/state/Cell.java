@@ -1,4 +1,4 @@
-package model.componentsofthemodel;
+package model.state;
 
 public class Cell {
     private int number;
@@ -9,12 +9,12 @@ public class Cell {
         this.number = number;
     }
 
-    boolean getIsItPartOfTheWay() {
-        return isItPartOfTheWay;
-    }
-
     public int getNumber() {
         return number;
+    }
+
+    boolean getIsItPartOfTheWay() {
+        return isItPartOfTheWay;
     }
 
     void setIsItPartOfTheWay(boolean isItPartOfTheWay) {

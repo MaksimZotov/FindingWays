@@ -1,7 +1,7 @@
 package model.algorithms.commitments;
 
-import model.componentsofthemodel.Cell;
-import model.componentsofthemodel.Field;
+import model.state.Cell;
+import model.state.Field;
 
 import java.util.ArrayList;
 

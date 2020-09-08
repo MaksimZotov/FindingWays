@@ -5,11 +5,11 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
-class FieldVisualisation {
+class StateVisualisation {
     private ArrayList<ArrayList<Rectangle>> rectanglesOfCells;
     private ArrayList<ArrayList<Text>> numbersOfCells;
 
-    FieldVisualisation(int height, int width) {
+    StateVisualisation(int height, int width) {
         //...
     }
 
