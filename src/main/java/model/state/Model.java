@@ -3,14 +3,14 @@ package model.state;
 import controller.commitments.ViewCommitments;
 import model.algorithms.commitments.AlgorithmCommitments;
 import model.algorithms.BasicAlgorithm;
-import controller.commitments.StateEditorCommitments;
+import controller.commitments.ModelCommitments;
 
-public class StateEditor implements StateEditorCommitments {
+public class Model implements ModelCommitments {
     private final State state;
     private final ViewCommitments view;
     private final AlgorithmCommitments algorithm;
 
-    public StateEditor(ViewCommitments view) {
+    public Model(ViewCommitments view) {
         this.view = view;
         algorithm = new BasicAlgorithm();
         state = new State();
@@ -36,6 +36,8 @@ public class StateEditor implements StateEditorCommitments {
 
     @Override
     public void calculateWays() {
+        if(state.getField() == null)
+            return;
         state.setWays(algorithm.getWays(state.getField()));
         view.getUpdatedDataAboutTheModel(state);
     }

@@ -1,6 +1,6 @@
 package controller.commitments;
 
-public interface StateEditorCommitments {
+public interface ModelCommitments {
     void createField(int height, int width, int maxNumberOfMoves);
     void setNumberOfCell(int row, int column, int number);
     void calculateWays();

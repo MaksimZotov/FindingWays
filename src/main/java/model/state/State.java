@@ -16,6 +16,11 @@ public class State implements StateCommitments {
     }
 
     @Override
+    public int getIndexOfCurrentWay() {
+        return indexOfCurrentWay;
+    }
+
+    @Override
     public int getFieldHeight() {
         return field.getHeight();
     }
@@ -26,18 +31,13 @@ public class State implements StateCommitments {
     }
 
     @Override
-    public int getNumberOfCell(int column, int row) {
-        return field.getCell(column, row).getNumber();
+    public int getNumberOfCell(int row, int column) {
+        return field.getCell(row, column).getNumber();
     }
 
     @Override
-    public boolean getCellIsItPartOfTheWay(int column, int row) {
-        return field.getCell(column, row).getIsItPartOfTheWay();
-    }
-
-    @Override
-    public boolean isThereAnyWay() {
-        return !ways.isEmpty();
+    public boolean getCellIsItPartOfTheWay(int row, int column) {
+        return field.getCell(row, column).getIsItPartOfTheWay();
     }
 
     Field getField() {
@@ -47,12 +47,12 @@ public class State implements StateCommitments {
     }
 
     void setNextCalculatedWay() {
-        if (isThereAnyWay())
+        if (!ways.isEmpty())
             setCalculatedWay(prevIndex -> indexOfCurrentWay = (prevIndex == ways.size() - 1) ? prevIndex : prevIndex + 1);
     }
 
     void setPreviousCalculatedWay() {
-        if (isThereAnyWay())
+        if (!ways.isEmpty())
             setCalculatedWay(prevIndex -> indexOfCurrentWay = (prevIndex == 0) ? prevIndex : prevIndex - 1);
     }
 
