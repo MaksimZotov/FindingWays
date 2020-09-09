@@ -1,5 +1,16 @@
 package view;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.GridPane;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 import model.state.commitments.StateCommitments;
 import controller.commitments.ModelCommitments;
 import controller.commitments.ViewCommitments;
@@ -12,6 +23,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.*;
+
 public class Main extends Application implements ViewCommitments {
     private ModelCommitments model;
     private StateVisualisation stateVisualisation;
@@ -23,7 +36,37 @@ public class Main extends Application implements ViewCommitments {
     @Override
     public void start(Stage stage) {
         model = new Model(this);
-        //...
+
+        int n = 32;
+        int m = 32;
+        int width = 1000;
+        int height = 1000;
+        GridPane gridPane = new GridPane();
+        gridPane.setMinSize(n, m);
+        gridPane.setMaxSize(n, m);
+
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++) {
+                int divider = Math.max(n, m) * 2;
+                Paint paint = ((i + j) % 2 == 1) ? Paint.valueOf("#C0C0C0") : Paint.valueOf("#A9A9A9");
+                gridPane.add(new Rectangle(width / divider, height / divider, paint), i, j);
+            }
+
+        StackPane root = new StackPane();
+        root.getChildren().add(gridPane);
+        StackPane.setAlignment(gridPane, Pos.TOP_CENTER);
+        gridPane.setPadding(new Insets(120, 0, 0, 0));
+
+        NumberBinding scale = Bindings.min(root.widthProperty().divide(750), root.heightProperty().divide(750));
+        gridPane.scaleXProperty().bind(scale);
+        gridPane.scaleYProperty().bind(scale);
+
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setHeight(720);
+        stage.setWidth(1280);
+        stage.setTitle("Finding Ways");
+        stage.show();
     }
 
     @Override
