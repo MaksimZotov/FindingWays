@@ -45,11 +45,13 @@ public class Main extends Application implements ViewCommitments {
         gridPane.setMinSize(n, m);
         gridPane.setMaxSize(n, m);
 
+        int divider = Math.max(n, m) * 2;
+        int rectangleWidth = width / divider;
+        int rectangleHeight = height / divider;
         for (int i = 0; i < n; i++)
             for (int j = 0; j < m; j++) {
-                int divider = Math.max(n, m) * 2;
                 Paint paint = ((i + j) % 2 == 1) ? Paint.valueOf("#C0C0C0") : Paint.valueOf("#A9A9A9");
-                gridPane.add(new Rectangle(width / divider, height / divider, paint), i, j);
+                gridPane.add(new Rectangle(rectangleWidth, rectangleHeight, paint), i, j);
             }
 
         StackPane root = new StackPane();
