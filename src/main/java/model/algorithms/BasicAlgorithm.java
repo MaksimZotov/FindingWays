@@ -14,10 +14,20 @@ public class BasicAlgorithm implements AlgorithmCommitments {
         int width = field.getWidth();
 
         Cell startCell = field.getCell(0, 0);
-        Cell finishCell = field.getCell(height, width);
+        Cell finishCell = field.getCell(height - 1, width - 1);
+
+        ArrayList<ArrayList<Cell>> result = new ArrayList<>();
+        result.add(new ArrayList<>());
+        result.get(0).add(startCell);
+
+        result.add(new ArrayList<>());
+        result.get(1).add(finishCell);
 
         //...
 
-        return null;
+        if (result.isEmpty())
+            return null;
+
+        return result;
     }
 }
