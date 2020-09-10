@@ -12,7 +12,7 @@ public class State implements StateCommitments {
 
     @Override
     public int getQuantityOfWays() {
-        return ways.size();
+        return (ways == null) ? 0 : ways.size();
     }
 
     @Override
@@ -26,7 +26,7 @@ public class State implements StateCommitments {
     }
 
     @Override
-    public int getFieldWeight() {
+    public int getFieldWidth() {
         return field.getWidth();
     }
 
@@ -37,7 +37,10 @@ public class State implements StateCommitments {
 
     @Override
     public boolean getCellIsItPartOfTheWay(int row, int column) {
-        return field.getCell(row, column).getIsItPartOfTheWay();
+        Cell cell = field.getCell(row, column);
+        if(cell == null)
+            return false;
+        return cell.getIsItPartOfTheWay();
     }
 
     Field getField() {

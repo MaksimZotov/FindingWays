@@ -4,7 +4,7 @@ public interface StateCommitments {
     int getQuantityOfWays();
     int getIndexOfCurrentWay();
     int getFieldHeight();
-    int getFieldWeight();
-    int getNumberOfCell(int column, int row);
-    boolean getCellIsItPartOfTheWay(int column, int row);
+    int getFieldWidth();
+    int getNumberOfCell(int row, int column);
+    boolean getCellIsItPartOfTheWay(int row, int column);
 }

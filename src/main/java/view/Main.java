@@ -2,15 +2,20 @@ package view;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.Border;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import model.state.commitments.StateCommitments;
 import controller.commitments.ModelCommitments;
 import controller.commitments.ViewCommitments;
@@ -20,14 +25,18 @@ import model.state.State;
 import javafx.application.Application;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application implements ViewCommitments {
     private ModelCommitments model;
-    private StateVisualisation stateVisualisation;
+    private AnchorPane anchorPane;
+    private int maxHeightOfField = 64;
+    private int maxWidthOfField = 64;
+    private ArrayList<ArrayList<Rectangle>> rectangles;
+    private ArrayList<ArrayList<Text>> numbers;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -36,62 +45,80 @@ public class Main extends Application implements ViewCommitments {
     @Override
     public void start(Stage stage) {
         model = new Model(this);
+        anchorPane = new AnchorPane();
 
-        int n = 32;
-        int m = 32;
-        int width = 1000;
-        int height = 1000;
-        GridPane gridPane = new GridPane();
-        gridPane.setMinSize(n, m);
-        gridPane.setMaxSize(n, m);
+        ObservableList<Node> childrenOfAnchorPane = anchorPane.getChildren();
 
-        int divider = Math.max(n, m) * 2;
-        int rectangleWidth = width / divider;
-        int rectangleHeight = height / divider;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < m; j++) {
-                Paint paint = ((i + j) % 2 == 1) ? Paint.valueOf("#C0C0C0") : Paint.valueOf("#A9A9A9");
-                gridPane.add(new Rectangle(rectangleWidth, rectangleHeight, paint), i, j);
+        rectangles = new ArrayList<>();
+        numbers = new ArrayList<>();
+
+        for(int i = 0; i < maxHeightOfField; i++) {
+            rectangles.add(new ArrayList<Rectangle>(maxHeightOfField));
+            numbers.add(new ArrayList<Text>(maxWidthOfField));
+
+            for (int j = 0; j < maxWidthOfField; j++) {
+                Rectangle rectangle = new Rectangle();
+                rectangles.get(i).add(rectangle);
+
+                Text number = new Text();
+                numbers.get(i).add(number);
+
+                childrenOfAnchorPane.addAll(rectangle, number);
             }
+        }
 
-        StackPane root = new StackPane();
-        root.getChildren().add(gridPane);
-        StackPane.setAlignment(gridPane, Pos.TOP_CENTER);
-        gridPane.setPadding(new Insets(120, 0, 0, 0));
-
-        NumberBinding scale = Bindings.min(root.widthProperty().divide(750), root.heightProperty().divide(750));
-        gridPane.scaleXProperty().bind(scale);
-        gridPane.scaleYProperty().bind(scale);
-
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(anchorPane);
+        stage.setResizable(false);
         stage.setScene(scene);
-        stage.setHeight(720);
         stage.setWidth(1280);
+        stage.setHeight(720);
         stage.setTitle("Finding Ways");
         stage.show();
+
+        createField(32, 32, 5);
     }
 
     @Override
     public void getUpdatedDataAboutTheModel(Object data) {
         if(data instanceof State) {
             StateCommitments state = ((State) data);
+
             int quantityOfWays = state.getQuantityOfWays();
             int indexOfCurrentWay = state.getIndexOfCurrentWay();
-            for (int i = 0; i < state.getFieldHeight(); i++) {
-                for (int j = 0; j < state.getFieldWeight(); j++) {
-                    Rectangle rectangleOfCell = stateVisualisation.getRectanglesOfCells().get(i).get(j);
-                    Text textWithNumberOfCell = stateVisualisation.getNumbersOfCells().get(i).get(j);
-                    Paint paint = (state.getCellIsItPartOfTheWay(i, j)) ? Paint.valueOf("white") : Paint.valueOf("yellow");
-                    rectangleOfCell.setFill(paint);
-                    textWithNumberOfCell.setText(state.getNumberOfCell(i, j) + "");
+
+            int heightField = state.getFieldHeight();
+            int widthField = state.getFieldWidth();
+
+            int leftBorderOfField = 600;
+            int topBorderOfField = 90;
+
+            int size = 500;
+
+            int max = Math.max(heightField, widthField);
+            size /= max;
+
+            for(int i = 0; i < heightField; i++)
+                for (int j = 0; j < widthField; j++) {
+                    Rectangle rectangle = rectangles.get(i).get(j);
+                    rectangle.setFill((state.getCellIsItPartOfTheWay(i, j)) ? Color.GRAY : Color.LIGHTGRAY);
+                    rectangle.setLayoutX(leftBorderOfField + i * size);
+                    rectangle.setLayoutY(topBorderOfField + j * size);
+                    rectangle.setHeight(size);
+                    rectangle.setWidth(size);
+                    rectangle.setStroke(Color.BLACK);
+
+                    Text number = numbers.get(i).get(j);
+                    number.setText(state.getNumberOfCell(i, j) + "");
+                    number.setTextAlignment(TextAlignment.CENTER);
+                    number.setLayoutX(leftBorderOfField + (i + 0.35) * size);
+                    number.setLayoutY(topBorderOfField + (j + 0.7) * size);
+                    number.setFont(Font.font(size >> 1));
                 }
-            }
         }
     }
 
     private void createField(int height, int width, int maxNumberOfMoves) {
         model.createField(height, width, maxNumberOfMoves);
-        stateVisualisation = new StateVisualisation(height, width);
     }
 
     private void setNumberOfCell(int row, int column, int number) {

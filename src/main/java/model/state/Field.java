@@ -13,9 +13,9 @@ public class Field {
 
         field = new ArrayList(height);
         for (int i = 0; i < height; i++) {
-            field.set(i, new ArrayList<>(width));
+            field.add(new ArrayList<>(width));
             for (int j = 0; j < width; j++) {
-                field.get(i).set(j, new Cell((int) Math.random() * maxNumberOfMoves + 1));
+                field.get(i).add(new Cell((int) (Math.random() * maxNumberOfMoves) + 1));
             }
         }
     }
@@ -29,7 +29,7 @@ public class Field {
     }
 
     public Cell getCell(int row, int column) {
-        if (row >= 0 && row < height && column > 0 && column < width)
+        if (row >= 0 && row < height && column >= 0 && column < width)
             return field.get(row).get(column);
         return null;
     }
