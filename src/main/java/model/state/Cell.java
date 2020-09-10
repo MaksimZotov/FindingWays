@@ -22,6 +22,6 @@ public class Cell {
     }
 
     void setNumber(int number) {
-        this.number = number;
+        this.number = Math.max(number, 1);
     }
 }

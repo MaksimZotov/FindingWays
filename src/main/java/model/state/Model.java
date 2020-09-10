@@ -31,6 +31,10 @@ public class Model implements ModelCommitments {
         if (cell == null)
             return;
         cell.setNumber(number);
+
+        field.setThatAllCellsAreNotPartOfTheWay();
+        state.setField(field);
+
         view.getUpdatedDataAboutTheModel(state);
     }
 

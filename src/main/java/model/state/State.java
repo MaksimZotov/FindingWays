@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 public class State implements StateCommitments {
     private ArrayList<ArrayList<Cell>> ways;
     private Field field;
-    private int indexOfCurrentWay;
+    private int indexOfCurrentWay = -1;
 
     @Override
     public int getQuantityOfWays() {
@@ -69,10 +69,14 @@ public class State implements StateCommitments {
 
     void setWays(ArrayList<ArrayList<Cell>> ways) {
         this.ways = ways;
+        indexOfCurrentWay = -1;
+        setNextCalculatedWay();
     }
 
 
     void setField(Field field) {
         this.field = field;
+        indexOfCurrentWay = -1;
+        ways = null;
     }
 }
