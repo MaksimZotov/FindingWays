@@ -24,8 +24,8 @@ public class BasicAlgorithm implements AlgorithmCommitments {
 
     private Field field;
     private ArrayList<ArrayList<Vertex>> vertices;
+    private Vertex startVertex;
     private ArrayList<ArrayList<Cell>> ways;
-    private int indexOfWay;
 
     @Override
     public ArrayList<ArrayList<Cell>> getWays(Field field) {
@@ -42,14 +42,12 @@ public class BasicAlgorithm implements AlgorithmCommitments {
             }
         }
 
-        Vertex startVertex = new Vertex(0, 0, field.getCell(0, 0).getNumber());
+        startVertex = new Vertex(0, 0, field.getCell(0, 0).getNumber());
 
         createVertices(startVertex);
 
         ways = new ArrayList<>();
-        ways.add(new ArrayList<Cell>());
-        indexOfWay = 0;
-        createWaysOnBaseOfVertices(startVertex);
+        createWaysOnBaseOfVertices(startVertex, new ArrayList<Cell>());
 
         if (ways.isEmpty())
             return null;
@@ -75,8 +73,10 @@ public class BasicAlgorithm implements AlgorithmCommitments {
                 return;
 
             Vertex nextVertex = vertices.get(rowOfNextVertex).get(columnOfNextVertex);
-            if (nextVertex != null)
+            if (nextVertex != null) {
                 vertex.children.add(nextVertex);
+                vertices.get(row).set(column, vertex);
+            }
             else {
                 nextVertex = new Vertex(
                         rowOfNextVertex,
@@ -95,19 +95,19 @@ public class BasicAlgorithm implements AlgorithmCommitments {
         biConsumer.accept(row, column + step);
     }
 
-    private void createWaysOnBaseOfVertices(Vertex vertex) {
+    private void createWaysOnBaseOfVertices(Vertex vertex, ArrayList<Cell> arrayList) {
         int row = vertex.row;
         int column = vertex.column;
 
+        arrayList.add(field.getCell(row, column));
+
         if(row == vertices.size() - 1 && column == vertices.get(0).size() - 1) {
-            ways.add(new ArrayList<>());
-            indexOfWay++;
+            ways.add(arrayList);
             return;
         }
 
-        ways.get(indexOfWay).add(field.getCell(vertex.row, vertex.column));
+        for(int i = 0; i < vertex.children.size(); i++)
+            createWaysOnBaseOfVertices(vertex.children.get(i), (ArrayList<Cell>) arrayList.clone());
 
-        for(Vertex childVertex : vertex.children)
-            createWaysOnBaseOfVertices(childVertex);
     }
 }
