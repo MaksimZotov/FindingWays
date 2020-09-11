@@ -3,7 +3,6 @@ package view;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -26,13 +25,14 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class Main extends Application implements ViewCommitments {
+    private int resolutionY = 720;
+    private int resolutionX = 1280;
     private ModelCommitments model;
     private AnchorPane anchorPane;
     private int maxHeightOfField = 64;
     private int maxWidthOfField = 64;
-    private int leftBorderOfField = 600;
-    private int topBorderOfField = 90;
-    private int sizeCoefficient = 500;
+    private double scaleUnitHeight = (double)resolutionY / 720;
+    private double scaleUnitWidth = (double)resolutionX / 1280;
     private ArrayList<ArrayList<Rectangle>> rectangles;
     private ArrayList<ArrayList<Text>> numbers;
     private Text textNumberOfCurrentWay;
@@ -55,36 +55,48 @@ public class Main extends Application implements ViewCommitments {
 
 
         // Creating the texts for output
-        textNumberOfCurrentWay = createText(
-                "Number of current way : 0", leftBorderOfField - sizeCoefficient * 0.85, topBorderOfField + (sizeCoefficient >> 4)
-        );
-        textQuantityOfWays = createText(
-                "Quantity of ways : 0", leftBorderOfField - sizeCoefficient * 0.85, topBorderOfField + (sizeCoefficient >> 3)
-        );
+        textNumberOfCurrentWay = createText("Number of current way : 0", 195 * scaleUnitWidth, 122 * scaleUnitHeight);
+        textQuantityOfWays = createText("Quantity of ways : 0", 195 * scaleUnitWidth, 152 * scaleUnitHeight);
+
+        int scaleTextsForOutput = (int)(scaleUnitHeight * 20);
+
+        textNumberOfCurrentWay.setFont(Font.font((scaleTextsForOutput)));
+        textQuantityOfWays.setFont(Font.font((scaleTextsForOutput)));
 
         childrenOfAnchorPane.addAll(textNumberOfCurrentWay, textQuantityOfWays);
 
 
         // Creating the static texts
-        Text textHeight = createText("Height :", leftBorderOfField - sizeCoefficient * 0.85, topBorderOfField + 150);
-        Text textWidth = createText("Width :", leftBorderOfField - sizeCoefficient * 0.85, topBorderOfField + 180);
-        Text textMaxValue = createText("Max value :", leftBorderOfField - sizeCoefficient * 0.85, topBorderOfField + 210);
-        Text textIncrement = createText("Increment :", leftBorderOfField - sizeCoefficient * 0.85, topBorderOfField + 300);
+        Text textHeight = createText("Height :", 195 * scaleUnitWidth, 240 * scaleUnitHeight);
+        Text textWidth = createText("Width :", 195 * scaleUnitWidth, 270 * scaleUnitHeight);
+        Text textMaxValue = createText("Max value :", 195 * scaleUnitWidth, 300 * scaleUnitHeight);
+        Text textIncrement = createText("Increment :", 195 * scaleUnitWidth, 390 * scaleUnitHeight);
+
+        int scaleStaticTexts = (int)(scaleUnitHeight * 18);
+
+        Text[] texts = new Text[] { textHeight, textWidth, textMaxValue, textIncrement };
+        for(Text text : texts)
+            text.setFont(Font.font(scaleStaticTexts));
 
         childrenOfAnchorPane.addAll(textHeight, textWidth, textMaxValue, textIncrement);
 
 
         // Creating the texts for input
-        textFieldHeight = createTextField("6", leftBorderOfField - sizeCoefficient * 0.65, topBorderOfField + 130);
-        textFieldWidth = createTextField("6", leftBorderOfField - sizeCoefficient * 0.65, topBorderOfField + 160);
-        textFieldMaxValue = createTextField("6", leftBorderOfField - sizeCoefficient * 0.65, topBorderOfField + 190);
-        textFieldIncrement = createTextField("1", leftBorderOfField - sizeCoefficient * 0.65, topBorderOfField + 280);
+        textFieldHeight = createTextField("6", 330 * scaleUnitWidth, 220 * scaleUnitHeight);
+        textFieldWidth = createTextField("6", 330 * scaleUnitWidth, 250 * scaleUnitHeight);
+        textFieldMaxValue = createTextField("6", 330 * scaleUnitWidth, 280 * scaleUnitHeight);
+        textFieldIncrement = createTextField("1", 330 * scaleUnitWidth, 370 * scaleUnitHeight);
 
-        int maxWidth = 40;
-        textFieldHeight.setMaxWidth(maxWidth);
-        textFieldWidth.setMaxWidth(maxWidth);
-        textFieldMaxValue.setMaxWidth(maxWidth);
-        textFieldIncrement.setMaxWidth(maxWidth);
+        double scaleWidthTextsForInput = 40 * scaleUnitHeight;
+        double scaleHeightTextsForInput = 30 * scaleUnitHeight;
+        double scaleFontTextsForInput = 15 * scaleUnitHeight;
+
+        TextField[] textFields = new TextField[] { textFieldHeight, textFieldWidth, textFieldMaxValue, textFieldIncrement };
+        for(TextField textField: textFields) {
+            textField.setMaxSize(scaleWidthTextsForInput, scaleHeightTextsForInput);
+            textField.setMinSize(scaleWidthTextsForInput, scaleHeightTextsForInput);
+            textField.setFont(Font.font(scaleFontTextsForInput));
+        }
 
         childrenOfAnchorPane.addAll(textFieldHeight, textFieldWidth, textFieldMaxValue, textFieldIncrement);
 
@@ -102,6 +114,7 @@ public class Main extends Application implements ViewCommitments {
                 rectangles.get(i).add(rectangle);
 
                 Text number = new Text();
+
                 number.setOnMouseClicked(e -> {
                     Pair<Integer, Integer> index = getIndexOfNumber(number);
                     if(index == null)
@@ -109,10 +122,9 @@ public class Main extends Application implements ViewCommitments {
 
                     int sign = 0;
                     MouseButton clickType = e.getButton();
-                    if (clickType == MouseButton.PRIMARY)
-                        sign = 1;
-                    else if(clickType == MouseButton.SECONDARY)
-                        sign = -1;
+
+                    if (clickType == MouseButton.PRIMARY) sign = 1;
+                    else if(clickType == MouseButton.SECONDARY) sign = -1;
 
                     setNumberOfCell(
                             index.getKey(), index.getValue(),
@@ -127,18 +139,16 @@ public class Main extends Application implements ViewCommitments {
 
 
         // Creating the buttons
-        Button buttonCreateField = createButton(
-                "Create field", leftBorderOfField - sizeCoefficient * 0.85 , topBorderOfField + sizeCoefficient * 0.8
-        );
-        Button buttonCalculateWays = createButton(
-                "Calculate ways", leftBorderOfField - sizeCoefficient * 0.6, topBorderOfField + sizeCoefficient * 0.8
-        );
-        Button buttonPreviousWay = createButton(
-                "Previous way", leftBorderOfField - sizeCoefficient * 0.85, topBorderOfField + sizeCoefficient * 0.9
-        );
-        Button buttonNextWay = createButton(
-                "Next way", leftBorderOfField - sizeCoefficient * 0.6, topBorderOfField + sizeCoefficient * 0.9
-        );
+        Button buttonCreateField = createButton("Create field", 195 * scaleUnitWidth, 490 * scaleUnitHeight);
+        Button buttonCalculateWays = createButton("Calculate ways", 350 * scaleUnitWidth, 490 * scaleUnitHeight);
+        Button buttonPreviousWay = createButton("Previous way", 195 * scaleUnitWidth, 540 * scaleUnitHeight);
+        Button buttonNextWay = createButton("Next way", 350 * scaleUnitWidth, 540 * scaleUnitHeight);
+
+        int scaleFontButtons = (int)(15 * scaleUnitHeight);
+
+        Button[] buttons = new Button[] {buttonCreateField, buttonCalculateWays, buttonPreviousWay, buttonNextWay };
+        for(Button button : buttons)
+            button.setFont(Font.font(scaleFontButtons));
 
         buttonCreateField.setOnAction(e -> createField());
         buttonCalculateWays.setOnAction(e -> calculateWays());
@@ -152,8 +162,8 @@ public class Main extends Application implements ViewCommitments {
         Scene scene = new Scene(anchorPane);
         stage.setResizable(false);
         stage.setScene(scene);
-        stage.setWidth(1280);
-        stage.setHeight(720);
+        stage.setWidth(resolutionX);
+        stage.setHeight(resolutionY);
         stage.setTitle("Finding Ways");
         stage.show();
     }
@@ -192,8 +202,7 @@ public class Main extends Application implements ViewCommitments {
             int heightField = state.getFieldHeight();
             int widthField = state.getFieldWidth();
 
-            int max = Math.max(heightField, widthField);
-            int localSizeCoefficient = sizeCoefficient / max;
+            int sizeCoefficient = (int) (500 * Math.max(scaleUnitHeight, scaleUnitWidth) / Math.max(heightField, widthField));
 
             for(int i = 0; i < maxHeightOfField; i++)
                 for (int j = 0; j < maxWidthOfField; j++) {
@@ -201,20 +210,20 @@ public class Main extends Application implements ViewCommitments {
                         Rectangle rectangle = rectangles.get(i).get(j);
                         rectangle.setVisible(true);
                         rectangle.setFill((state.getCellIsItPartOfTheWay(i, j)) ? Color.GRAY : Color.LIGHTGRAY);
-                        rectangle.setLayoutX(leftBorderOfField + i * localSizeCoefficient);
-                        rectangle.setLayoutY(topBorderOfField + j * localSizeCoefficient);
-                        rectangle.setHeight(localSizeCoefficient);
-                        rectangle.setWidth(localSizeCoefficient);
+                        rectangle.setLayoutX(550 * scaleUnitWidth + i * sizeCoefficient);
+                        rectangle.setLayoutY(90 * scaleUnitHeight + j * sizeCoefficient);
+                        rectangle.setHeight(sizeCoefficient);
+                        rectangle.setWidth(sizeCoefficient);
                         rectangle.setStroke(Color.BLACK);
 
                         Text number = numbers.get(i).get(j);
                         number.setVisible(true);
                         number.setText(state.getNumberOfCell(i, j) + "");
                         number.setTextAlignment(TextAlignment.CENTER);
-                        number.setWrappingWidth(localSizeCoefficient);
-                        number.setLayoutX(leftBorderOfField + (i) * localSizeCoefficient);
-                        number.setLayoutY(topBorderOfField + (j + 0.7) * localSizeCoefficient);
-                        number.setFont(Font.font(localSizeCoefficient >> 1));
+                        number.setWrappingWidth(sizeCoefficient);
+                        number.setLayoutX(550 * scaleUnitWidth + (i) * sizeCoefficient);
+                        number.setLayoutY(90 * scaleUnitHeight + (j + 0.7) * sizeCoefficient);
+                        number.setFont(Font.font(sizeCoefficient >> 1));
                     }
                     else {
                         rectangles.get(i).get(j).setVisible(false);
