@@ -38,8 +38,8 @@ public class Main extends Application implements ViewCommitments {
     private ArrayList<ArrayList<Text>> numbers;
     private Text textNumberOfCurrentWay;
     private Text textQuantityOfWays;
-    private TextField textFieldHeight;
     private TextField textFieldWidth;
+    private TextField textFieldHeight;
     private TextField textFieldMaxValue;
     private TextField textFieldIncrement;
     private Text textHeight;
@@ -251,8 +251,8 @@ public class Main extends Application implements ViewCommitments {
             item.setMinSize(scaleWidthTextsForInput, scaleHeightTextsForInput);
             item.setLayoutX(secondLeftBorder);
         }
-        textFieldHeight.setLayoutY(220 * scaleUnitHeight);
-        textFieldWidth.setLayoutY(250 * scaleUnitHeight);
+        textFieldWidth.setLayoutY(220 * scaleUnitHeight);
+        textFieldHeight.setLayoutY(250 * scaleUnitHeight);
         textFieldMaxValue.setLayoutY(280 * scaleUnitHeight);
         textFieldIncrement.setLayoutY(370 * scaleUnitHeight);
 

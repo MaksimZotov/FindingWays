@@ -108,6 +108,5 @@ public class BasicAlgorithm implements AlgorithmCommitments {
 
         for(int i = 0; i < vertex.children.size(); i++)
             createWaysOnBaseOfVertices(vertex.children.get(i), (ArrayList<Cell>) arrayList.clone());
-
     }
 }
