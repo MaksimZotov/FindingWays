@@ -1,4 +1,4 @@
-package controller.commitments;
+package controller;
 
 public interface ViewCommitments {
     void getUpdatedDataAboutTheModel(Object data);

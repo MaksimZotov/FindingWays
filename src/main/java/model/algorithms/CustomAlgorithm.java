@@ -1,13 +1,13 @@
 package model.algorithms;
 
 import model.algorithms.commitments.AlgorithmCommitments;
-import model.state.Cell;
-import model.state.Field;
+import model.Cell;
+import model.Field;
 
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 
-public class BasicAlgorithm implements AlgorithmCommitments {
+public class CustomAlgorithm implements AlgorithmCommitments {
     private class Vertex {
         private final ArrayList<Vertex> children;
         private final int row;

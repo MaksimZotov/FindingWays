@@ -12,11 +12,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Pair;
-import model.state.commitments.StateCommitments;
-import controller.commitments.ModelCommitments;
-import controller.commitments.ViewCommitments;
-import model.state.Model;
-import model.state.State;
+import controller.StateForViewCommitments;
+import controller.ModelCommitments;
+import controller.ViewCommitments;
+import model.Model;
 
 import javafx.application.Application;
 import javafx.scene.shape.Rectangle;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 
 public class Main extends Application implements ViewCommitments {
     private ModelCommitments model;
-    private StateCommitments state;
+    private StateForViewCommitments state;
     private int maxHeightOfField = 64;
     private int maxWidthOfField = 64;
     private double resolutionY = 720;
@@ -136,8 +135,8 @@ public class Main extends Application implements ViewCommitments {
 
     @Override
     public void getUpdatedDataAboutTheModel(Object data) {
-        if(data instanceof State) {
-            state = ((State) data);
+        if(data instanceof StateForViewCommitments) {
+            state = ((StateForViewCommitments) data);
 
             textNumberOfCurrentWay.setText("Number of current way : " + (state.getIndexOfCurrentWay() + 1));
             textQuantityOfWays.setText("Quantity of ways : " + state.getQuantityOfWays());

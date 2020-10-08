@@ -1,6 +1,6 @@
-package model.state.commitments;
+package controller;
 
-public interface StateCommitments {
+public interface StateForViewCommitments {
     int getQuantityOfWays();
     int getIndexOfCurrentWay();
     int getFieldHeight();

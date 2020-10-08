@@ -1,4 +1,4 @@
-package controller.commitments;
+package controller;
 
 public interface ModelCommitments {
     void createField(int height, int width, int maxNumberOfMoves);

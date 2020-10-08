@@ -1,4 +1,4 @@
-package model.state;
+package model;
 
 public class Cell {
     private int number;

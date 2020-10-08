@@ -1,18 +1,19 @@
-package model.state;
+package model;
 
-import controller.commitments.ViewCommitments;
+import controller.ViewCommitments;
 import model.algorithms.commitments.AlgorithmCommitments;
-import model.algorithms.BasicAlgorithm;
-import controller.commitments.ModelCommitments;
+import model.algorithms.CustomAlgorithm;
+import controller.ModelCommitments;
+import controller.StateForModelCommitments;
 
 public class Model implements ModelCommitments {
-    private final State state;
     private final ViewCommitments view;
     private final AlgorithmCommitments algorithm;
+    private final StateForModelCommitments state;
 
     public Model(ViewCommitments view) {
         this.view = view;
-        algorithm = new BasicAlgorithm();
+        algorithm = new CustomAlgorithm();
         state = new State();
     }
 

@@ -1,14 +1,18 @@
-package model.state;
+package model;
 
-import model.state.commitments.StateCommitments;
+import controller.StateForModelCommitments;
+import controller.StateForViewCommitments;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class State implements StateCommitments {
+public class State implements StateForViewCommitments, StateForModelCommitments {
     private ArrayList<ArrayList<Cell>> ways;
     private Field field;
     private int indexOfCurrentWay = -1;
+
+
+    // StateForViewCommitments
 
     @Override
     public int getQuantityOfWays() {
@@ -43,40 +47,47 @@ public class State implements StateCommitments {
         return cell.getIsItPartOfTheWay();
     }
 
-    Field getField() {
+
+    // StateForModelCommitments
+
+    @Override
+    public Field getField() {
         if (field != null)
             return field;
         return null;
     }
 
-    void setNextCalculatedWay() {
+    @Override
+    public void setNextCalculatedWay() {
         if (!ways.isEmpty())
             setCalculatedWay(prevIndex -> indexOfCurrentWay = (prevIndex == ways.size() - 1) ? prevIndex : prevIndex + 1);
     }
 
-    void setPreviousCalculatedWay() {
+    @Override
+    public void setPreviousCalculatedWay() {
         if (!ways.isEmpty())
             setCalculatedWay(prevIndex -> indexOfCurrentWay = (prevIndex == 0) ? prevIndex : prevIndex - 1);
     }
 
-    void setCalculatedWay(Consumer<Integer> consumer) {
-        field.setThatAllCellsAreNotPartOfTheWay();
-        consumer.accept(indexOfCurrentWay);
-        ArrayList<Cell> way = ways.get(indexOfCurrentWay);
-        for (Cell item : way)
-            item.setIsItPartOfTheWay(true);
-    }
-
-    void setWays(ArrayList<ArrayList<Cell>> ways) {
+    @Override
+    public void setWays(ArrayList<ArrayList<Cell>> ways) {
         this.ways = ways;
         indexOfCurrentWay = -1;
         setNextCalculatedWay();
     }
 
-
-    void setField(Field field) {
+    @Override
+    public void setField(Field field) {
         this.field = field;
         indexOfCurrentWay = -1;
         ways = null;
+    }
+
+    private void setCalculatedWay(Consumer<Integer> consumer) {
+        field.setThatAllCellsAreNotPartOfTheWay();
+        consumer.accept(indexOfCurrentWay);
+        ArrayList<Cell> way = ways.get(indexOfCurrentWay);
+        for (Cell item : way)
+            item.setIsItPartOfTheWay(true);
     }
 }
