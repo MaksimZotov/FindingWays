@@ -62,26 +62,37 @@ public class Main extends Application implements ViewCommitments {
         AnchorPane anchorPane = new AnchorPane();
         ObservableList<Node> childrenOfAnchorPane = anchorPane.getChildren();
 
-        // Creating the texts for output
+        // Создание текстов, предназначенных исключительно для вывода информации
         textNumberOfCurrentWay = new Text("Number of current way : 0");
         textQuantityOfWays = new Text("Quantity of ways : 0");
         childrenOfAnchorPane.addAll(textNumberOfCurrentWay, textQuantityOfWays);
 
-        // Creating the static texts
+        // Создание неизменяющихся текстов
         textHeight = new Text("Height :");
         textWidth = new Text("Width :");
         textMaxValue = new Text("Max value :");
         textIncrement = new Text("Increment :");
         childrenOfAnchorPane.addAll(textHeight, textWidth, textMaxValue, textIncrement);
 
-        // Creating the texts for input
+        // Создание полей для ввода данных
         textFieldHeight = new TextField("6");
         textFieldWidth = new TextField("6");
         textFieldMaxValue = new TextField("6");
         textFieldIncrement = new TextField("1");
         childrenOfAnchorPane.addAll(textFieldHeight, textFieldWidth, textFieldMaxValue, textFieldIncrement);
 
-        // Creating the field
+        // Создание кнопок
+        buttonCreateField = new Button("Create field");
+        buttonCalculateWays = new Button("Calculate ways");
+        buttonPreviousWay = new Button("Previous way");
+        buttonNextWay = new Button("Next way");
+        buttonCreateField.setOnAction(e -> createField());
+        buttonCalculateWays.setOnAction(e -> calculateWays());
+        buttonNextWay.setOnAction(e -> showNextCalculatedWay());
+        buttonPreviousWay.setOnAction(e -> showPreviousCalculatedWay());
+        childrenOfAnchorPane.addAll(buttonCreateField, buttonCalculateWays, buttonPreviousWay, buttonNextWay);
+
+        // Создание поля
         rectangles = new ArrayList<>();
         numbers = new ArrayList<>();
         for(int i = 0; i < maxHeightOfField; i++) {
@@ -109,18 +120,7 @@ public class Main extends Application implements ViewCommitments {
             }
         }
 
-        // Creating the buttons
-        buttonCreateField = new Button("Create field");
-        buttonCalculateWays = new Button("Calculate ways");
-        buttonPreviousWay = new Button("Previous way");
-        buttonNextWay = new Button("Next way");
-        buttonCreateField.setOnAction(e -> createField());
-        buttonCalculateWays.setOnAction(e -> calculateWays());
-        buttonNextWay.setOnAction(e -> showNextCalculatedWay());
-        buttonPreviousWay.setOnAction(e -> showPreviousCalculatedWay());
-        childrenOfAnchorPane.addAll(buttonCreateField, buttonCalculateWays, buttonPreviousWay, buttonNextWay);
-
-        // Creating the stage
+        // Создание Stage
         updateStageForResolution(stage, resolutionY, resolutionX);
         Scene scene = new Scene(anchorPane);
 
@@ -218,7 +218,7 @@ public class Main extends Application implements ViewCommitments {
         double firstLeftBorder = 160 * scaleUnitWidth;
         double secondLeftBorder = 330 * scaleUnitWidth;
 
-        // Updating the texts for output
+        // Обновление текстов, предназначенных исключительно для вывода информации
         int scaleTextsForOutput = (int)(scaleUnitHeight * 20);
         Text[] textsForOutput = new Text[] {textNumberOfCurrentWay, textQuantityOfWays };
         for(Text item : textsForOutput) {
@@ -228,7 +228,7 @@ public class Main extends Application implements ViewCommitments {
         textNumberOfCurrentWay.setLayoutY(122 * scaleUnitHeight);
         textQuantityOfWays.setLayoutY(152 * scaleUnitHeight);
 
-        // Updating the static texts
+        // Обновление неизменяющихся текстов
         int scaleStaticTexts = (int)(scaleUnitHeight * 18);
         Text[] staticTexts = new Text[] { textHeight, textWidth, textMaxValue, textIncrement };
         for(Text item : staticTexts) {
@@ -240,7 +240,7 @@ public class Main extends Application implements ViewCommitments {
         textMaxValue.setLayoutY(300 * scaleUnitHeight);
         textIncrement.setLayoutY(390 * scaleUnitHeight);
 
-        // Updating the texts for input
+        // Обновление полей для ввода данных
         double scaleWidthTextsForInput = 40 * scaleUnitHeight;
         double scaleHeightTextsForInput = 30 * scaleUnitHeight;
         double scaleFontTextsForInput = 15 * scaleUnitHeight;
@@ -256,7 +256,7 @@ public class Main extends Application implements ViewCommitments {
         textFieldMaxValue.setLayoutY(280 * scaleUnitHeight);
         textFieldIncrement.setLayoutY(370 * scaleUnitHeight);
 
-        // Updating the buttons
+        // Обновление кнопок
         int scaleFontButtons = (int)(15 * scaleUnitHeight);
         Button[] buttonsLeft = new Button[] { buttonCreateField, buttonPreviousWay };
         Button[] buttonsRight = new Button[] { buttonCalculateWays, buttonNextWay };
@@ -271,7 +271,7 @@ public class Main extends Application implements ViewCommitments {
         buttonCalculateWays.setLayoutY(490 * scaleUnitHeight);
         buttonNextWay.setLayoutY(540 * scaleUnitHeight);
 
-        // Updating the field
+        // Обновление поля
         getUpdatedDataAboutTheModel(state);
     }
 
