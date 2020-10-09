@@ -49,12 +49,16 @@ public class Model implements ModelCommitments {
 
     @Override
     public void showNextCalculatedWay() {
+        if (state.getField() == null)
+            return;
         state.setNextCalculatedWay();
         view.getUpdatedDataAboutTheModel(state);
     }
 
     @Override
     public void showPreviousCalculatedWay() {
+        if (state.getField() == null)
+            return;
         state.setPreviousCalculatedWay();
         view.getUpdatedDataAboutTheModel(state);
     }

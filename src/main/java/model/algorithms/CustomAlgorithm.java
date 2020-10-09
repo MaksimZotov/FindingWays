@@ -38,7 +38,7 @@ public class CustomAlgorithm implements AlgorithmCommitments {
         int width = field.getWidth();
 
         if(height == 0 || width == 0)
-            return null;
+            return new ArrayList();
 
         // Создание поля из вершин, соответствущего входному полю
         vertices = new ArrayList<>(height);

@@ -59,13 +59,13 @@ public class State implements StateForViewCommitments, StateForModelCommitments 
 
     @Override
     public void setNextCalculatedWay() {
-        if (!ways.isEmpty())
+        if (ways != null && !ways.isEmpty())
             setCalculatedWay(prevIndex -> indexOfCurrentWay = (prevIndex == ways.size() - 1) ? prevIndex : prevIndex + 1);
     }
 
     @Override
     public void setPreviousCalculatedWay() {
-        if (!ways.isEmpty())
+        if (ways != null && !ways.isEmpty())
             setCalculatedWay(prevIndex -> indexOfCurrentWay = (prevIndex == 0) ? prevIndex : prevIndex - 1);
     }
 

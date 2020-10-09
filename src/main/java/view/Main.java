@@ -22,6 +22,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.function.BiConsumer;
 
 public class Main extends Application implements ViewCommitments {
     private ModelCommitments model;
@@ -74,10 +75,36 @@ public class Main extends Application implements ViewCommitments {
         childrenOfAnchorPane.addAll(textHeight, textWidth, textMaxValue, textIncrement);
 
         // Создание полей для ввода данных
-        textFieldHeight = new TextField("6");
-        textFieldWidth = new TextField("6");
-        textFieldMaxValue = new TextField("6");
-        textFieldIncrement = new TextField("1");
+        textFieldHeight = new TextField();
+        textFieldWidth = new TextField();
+        textFieldMaxValue = new TextField();
+        textFieldIncrement = new TextField();
+        BiConsumer<TextField, Pair<String, Integer>> textFieldListener = (textField, newValueAndMax)  -> {
+            try {
+                String newValue = newValueAndMax.getKey();
+                int newValueInt = Integer.parseInt(newValue);
+                if(newValueInt <= 0) {
+                    textField.setText("1");
+                    textField.setStyle("-fx-text-fill: red;");
+                    return;
+                }
+                int max = newValueAndMax.getValue();
+                if(newValueInt > max) {
+                    textField.setText("" + max);
+                    textField.setStyle("-fx-text-fill: red;");
+                }
+                else {
+                    textField.setText(newValue);
+                    textField.setStyle("-fx-text-fill: black;");
+                }
+            } catch (NumberFormatException ex) {
+                textField.setText("");
+            }
+        };
+        textFieldHeight.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldHeight, new Pair<>(newValue, 32)));
+        textFieldWidth.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldWidth, new Pair<>(newValue, 32)));
+        textFieldMaxValue.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldMaxValue, new Pair<>(newValue, 99)));
+        textFieldIncrement.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldIncrement, new Pair<>(newValue, 99)));
         childrenOfAnchorPane.addAll(textFieldHeight, textFieldWidth, textFieldMaxValue, textFieldIncrement);
 
         // Создание кнопок
@@ -109,10 +136,9 @@ public class Main extends Application implements ViewCommitments {
                     MouseButton clickType = e.getButton();
                     if (clickType == MouseButton.PRIMARY) sign = 1;
                     else if(clickType == MouseButton.SECONDARY) sign = -1;
-                    setNumberOfCell(
-                            index.getKey(), index.getValue(),
-                            Integer.parseInt(number.getText()) + sign * Integer.parseInt(textFieldIncrement.getText())
-                    );
+                    int numberInt = Integer.parseInt(number.getText());
+                    int newNumber = numberInt + sign * Integer.parseInt(textFieldIncrement.getText());
+                    setNumberOfCell(index.getKey(), index.getValue(), Math.min(newNumber, 99));
                 });
                 numbers.get(i).add(number);
                 childrenOfAnchorPane.addAll(rectangle, number);
@@ -182,11 +208,12 @@ public class Main extends Application implements ViewCommitments {
     }
 
     private void createField() {
-        model.createField(
-                Integer.parseInt(textFieldHeight.getText()),
-                Integer.parseInt(textFieldWidth.getText()),
-                Integer.parseInt(textFieldMaxValue.getText())
-        );
+        try {
+            int height = Integer.parseInt(textFieldHeight.getText());
+            int width = Integer.parseInt(textFieldWidth.getText());
+            int maxValue = Integer.parseInt(textFieldMaxValue.getText());
+            model.createField(height, width, maxValue);
+        } catch (NumberFormatException ex) { }
     }
 
     private void setNumberOfCell(int row, int column, int number) {
