@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import controller.StateForViewCommitments;
 import controller.ModelCommitments;
@@ -50,6 +51,7 @@ public class Main extends Application implements ViewCommitments {
     private Button buttonCalculateWays;
     private Button buttonPreviousWay;
     private Button buttonNextWay;
+    private Button buttonHelp;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -103,8 +105,8 @@ public class Main extends Application implements ViewCommitments {
         };
         textFieldHeight.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldHeight, new Pair<>(newValue, 32)));
         textFieldWidth.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldWidth, new Pair<>(newValue, 32)));
-        textFieldMaxValue.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldMaxValue, new Pair<>(newValue, 99)));
-        textFieldIncrement.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldIncrement, new Pair<>(newValue, 99)));
+        textFieldMaxValue.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldMaxValue, new Pair<>(newValue, 100)));
+        textFieldIncrement.textProperty().addListener((observable, oldValue, newValue) -> textFieldListener.accept(textFieldIncrement, new Pair<>(newValue, 100)));
         childrenOfAnchorPane.addAll(textFieldHeight, textFieldWidth, textFieldMaxValue, textFieldIncrement);
 
         // Создание кнопок
@@ -112,11 +114,13 @@ public class Main extends Application implements ViewCommitments {
         buttonCalculateWays = new Button("Calculate ways");
         buttonPreviousWay = new Button("Previous way");
         buttonNextWay = new Button("Next way");
+        buttonHelp = new Button("Help");
         buttonCreateField.setOnAction(e -> createField());
         buttonCalculateWays.setOnAction(e -> calculateWays());
         buttonNextWay.setOnAction(e -> showNextCalculatedWay());
         buttonPreviousWay.setOnAction(e -> showPreviousCalculatedWay());
-        childrenOfAnchorPane.addAll(buttonCreateField, buttonCalculateWays, buttonPreviousWay, buttonNextWay);
+        buttonHelp.setOnAction(e -> showHelp());
+        childrenOfAnchorPane.addAll(buttonCreateField, buttonCalculateWays, buttonPreviousWay, buttonNextWay, buttonHelp);
 
         // Создание поля
         rectangles = new ArrayList<>();
@@ -224,12 +228,36 @@ public class Main extends Application implements ViewCommitments {
         model.calculateWays();
     }
 
-    public void showNextCalculatedWay() {
+    private void showNextCalculatedWay() {
         model.showNextCalculatedWay();
     }
 
-    public void showPreviousCalculatedWay() {
+    private void showPreviousCalculatedWay() {
         model.showPreviousCalculatedWay();
+    }
+
+    private void showHelp() {
+        Stage dialog = new Stage();
+        dialog.initStyle(StageStyle.UTILITY);
+        Text text = new Text(0, 15,
+            "Приложение позволяет находить все возможные пути из левой верхней ячейки в правую нижнюю\n\n" +
+            "Current number of way - номер текущего пути\n" +
+            "Quantity of ways - количество найденных путей\n" +
+            "Height - высота поля, которое вы хотите сгенерировать\n" +
+            "Width - ширина поля, которое вы хотите сгенерировать\n" +
+            "Max value - максимальное значение ячейки поля при генерации\n" +
+            "Increment - значение, на которое будет увеличиваться значение ячейки при клике по ней левой кнопкой мыши или уменьшаться - при клике правой\n" +
+            "Create field - создать поле\n" +
+            "Calculate ways - высчитать пути для текущего поля\n" +
+            "Previous way - посмотреть предыдущий путь\n" +
+            "Next way - посмотреть следующий путь\n\n" +
+            "Ограничения:\nМаксимальное значение ячейки - 100\nМаксимальное значение у Increment - 100\nМаксимальное значение высоты или ширины - 32"
+        );
+        text.setFont(Font.font(14));
+        AnchorPane anchorPane = new AnchorPane(text);
+        Scene scene = new Scene(anchorPane);
+        dialog.setScene(scene);
+        dialog.show();
     }
 
     private void updateStageForResolution(Stage stage, double resolutionY, double resolutionX) {
@@ -276,6 +304,8 @@ public class Main extends Application implements ViewCommitments {
             item.setMaxSize(scaleWidthTextsForInput, scaleHeightTextsForInput);
             item.setMinSize(scaleWidthTextsForInput, scaleHeightTextsForInput);
             item.setLayoutX(secondLeftBorder);
+            item.setMinWidth(scaleWidthTextsForInput * 2);
+            item.setMaxWidth(scaleWidthTextsForInput * 2);
         }
         textFieldWidth.setLayoutY(220 * scaleUnitHeight);
         textFieldHeight.setLayoutY(250 * scaleUnitHeight);
@@ -296,6 +326,9 @@ public class Main extends Application implements ViewCommitments {
         buttonPreviousWay.setLayoutY(540 * scaleUnitHeight);
         buttonCalculateWays.setLayoutY(490 * scaleUnitHeight);
         buttonNextWay.setLayoutY(540 * scaleUnitHeight);
+        buttonHelp.setFont(Font.font(scaleFontButtons));
+        buttonHelp.setLayoutX(firstLeftBorder);
+        buttonHelp.setLayoutY(50 * scaleUnitHeight);
 
         // Обновление поля
         getUpdatedDataAboutTheModel(state);
