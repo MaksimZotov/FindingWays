@@ -7,10 +7,10 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 
-public class CustomAlgorithmTests {
+public class Tests {
 
     @Test
-    public void test() {
+    public void testAlgorithm() {
         CustomAlgorithm algorithm = new CustomAlgorithm();
         ArrayList<ArrayList<Cell>> expected;
         ArrayList<ArrayList<Cell>> actual;
@@ -49,13 +49,6 @@ public class CustomAlgorithmTests {
             }
         }
 
-        // 3 1 1
-        // 1 1 1
-        // 1 1 1
-        field.getCell(0, 0).setNumber(3);
-        Assert.assertEquals(null, algorithm.getWays(field));
-
-
         // 2 1 3 1 1
         // 1 1 1 1 1
         // 3 1 1 1 1
@@ -82,5 +75,39 @@ public class CustomAlgorithmTests {
                 Assert.assertEquals(expected.get(i).get(j).getNumber(), actual.get(i).get(j).getNumber());
             }
         }
+    }
+
+    @Test
+    public void testNoWays() {
+        // 3 1 1
+        // 1 1 1
+        // 1 1 1
+        CustomAlgorithm algorithm = new CustomAlgorithm();
+        Field field = new Field(3, 3, 1);
+        field.getCell(0, 0).setNumber(3);
+        Assert.assertEquals(null, algorithm.getWays(field));
+
+        // 2 1 3
+        // 1 1 1
+        // 3 1 1
+        field.getCell(0, 0).setNumber(2);
+        field.getCell(2, 0).setNumber(3);
+        field.getCell(0, 2).setNumber(3);
+        Assert.assertEquals(null, algorithm.getWays(field));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testException_1() {
+        new Field(-1, 2, 10);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testException_2() {
+        new Field(1, 0, 5);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testException_3() {
+        new Field(5, 5, 0);
     }
 }

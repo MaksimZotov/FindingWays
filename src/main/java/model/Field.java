@@ -8,6 +8,9 @@ public class Field {
     private final int width;
 
     Field(int height, int width, int maxNumberOfMoves) {
+        if (height < 1 || width < 1 || maxNumberOfMoves < 1) {
+            throw new IllegalArgumentException();
+        }
         this.height = height;
         this.width = width;
 
