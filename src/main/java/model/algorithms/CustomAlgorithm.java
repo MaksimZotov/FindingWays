@@ -1,10 +1,12 @@
 package model.algorithms;
 
+import javafx.util.Pair;
 import model.algorithms.commitments.AlgorithmCommitments;
 import model.Cell;
 import model.Field;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.BiConsumer;
 
 public class CustomAlgorithm implements AlgorithmCommitments {
@@ -13,8 +15,9 @@ public class CustomAlgorithm implements AlgorithmCommitments {
         private final int row;
         private final int column;
         private final int stepSize;
+        private boolean isThereWay;
 
-        public Vertex(int row, int column, int stepSize) {
+        private Vertex(int row, int column, int stepSize) {
             this.row = row;
             this.column = column;
             this.stepSize = stepSize;
@@ -24,31 +27,24 @@ public class CustomAlgorithm implements AlgorithmCommitments {
 
     private Field field;
 
-    // Поле из вершин, соответствущее входному полю
-    private ArrayList<ArrayList<Vertex>> vertices;
+    // Мапа с ключем в качестве индексов ячейки и значением в качестве вершины, соответствующей ячейке
+    private HashMap<Pair<Integer, Integer>, Vertex> vertices = new HashMap<>();
 
     private Vertex startVertex;
     private ArrayList<ArrayList<Cell>> ways;
+
+    private int height;
+    private int width;
 
     @Override
     public ArrayList<ArrayList<Cell>> getWays(Field field) {
         this.field = field;
 
-        int height = field.getHeight();
-        int width = field.getWidth();
+        height = field.getHeight();
+        width = field.getWidth();
 
         if(height == 0 || width == 0)
             return new ArrayList();
-
-        // Создание поля из вершин, соответствущего входному полю
-        vertices = new ArrayList<>(height);
-        for(int i = 0; i < height; i++) {
-            vertices.add(new ArrayList<Vertex>(width));
-            for(int j = 0; j < width; j++) {
-                // Изначально каждая вершина, соответствующая определенной ячейке поля, инициализируется null'ом
-                vertices.get(i).add(null);
-            }
-        }
 
         // Вершина, из которой считаем пути
         startVertex = new Vertex(0, 0, field.getCell(0, 0).getNumber());
@@ -59,21 +55,29 @@ public class CustomAlgorithm implements AlgorithmCommitments {
         ways = new ArrayList<ArrayList<Cell>>();
         createWaysOnBaseOfVertices(startVertex, new ArrayList<Cell>());
 
+        vertices.clear();
+
         return ways.isEmpty() ? null : ways;
     }
 
-    // Время - O(M)
-    // Память - O(N^2)
-    // M - суммарное число ячеек во всех путях
-    // N - длина квадратного поля
+    // Время - O(N)
+    // Память - O(N)
+    // N - Количество ячеек, в которые мы можем попасть
     private void findChildren(Vertex vertex) {
         int row = vertex.row;
         int column = vertex.column;
         int step = vertex.stepSize;
 
         // Если текущая вершина является конечной
-        if(row == vertices.size() - 1 && column == vertices.get(0).size() - 1) {
-            vertices.get(row).set(column, vertex);
+        if(row == height - 1 && column == width - 1) {
+
+            // Указываем в мапе вершин, что данная вершина рассмотрена
+            // O(1) в среднем
+            vertices.put(new Pair<>(row, column), vertex);
+
+            // Указываем, что данная вершина является частью как минимум одного из путей
+            vertex.isThereWay = true;
+
             return;
         }
 
@@ -83,20 +87,26 @@ public class CustomAlgorithm implements AlgorithmCommitments {
         BiConsumer<Integer, Integer> biConsumer = (rowOfNextVertex, columnOfNextVertex) -> {
 
             // Если новая вершина выходит за пределы поля
-            if(rowOfNextVertex >= vertices.size() || columnOfNextVertex >= vertices.get(0).size())
+            if(rowOfNextVertex >= height|| columnOfNextVertex >= width) {
                 return;
+            }
 
-            // Берём элемент из поля вершин в соответсвии с индексами новой вершины
-            Vertex nextVertex = vertices.get(rowOfNextVertex).get(columnOfNextVertex);
+            // Берём элемент из мапы вершин по индексам следующей вершины
+            // O(1) в среднем
+            Vertex nextVertex = vertices.get(new Pair<>(rowOfNextVertex, columnOfNextVertex));
 
-            // Если данный элемент != null, то информация о возможных путях из него уже высчитана
+            // Если следующая вершина != null, то информация о возможных путях из неё уже высчитана
             if (nextVertex != null) {
 
-                // Добавляем к текущей вершине в качестве потомка новую вершину
-                vertex.children.add(nextVertex);
+                // Если из следующей вершины есть путь
+                if (nextVertex.isThereWay) {
 
-                // В поле вершин указываем, что текущая вершина уже высчитана
-                vertices.get(row).set(column, vertex);
+                    // Добавляем к текущей вершине в качестве потомка следующую вершину
+                    vertex.children.add(nextVertex);
+
+                    // Указываем, что из текущей вершины есть путь
+                    vertex.isThereWay = true;
+                }
             }
             else {
                 nextVertex = new Vertex(
@@ -108,28 +118,33 @@ public class CustomAlgorithm implements AlgorithmCommitments {
                 // Ищем потомков для новой вершины, ведущих к финальной вершине
                 findChildren(nextVertex);
 
-                // Если у новой вершины нашлись потомки, ведущие к финальной вершине
-                if(vertices.get(rowOfNextVertex).get(columnOfNextVertex) != null) {
+                /// Если из следующей вершины есть путь
+                if(nextVertex.isThereWay) {
 
-                    // Добавляем к текущей вершине в качестве потомка новую вершину
+                    // Добавляем к текущей вершине в качестве потомка следующую вершину
                     vertex.children.add(nextVertex);
 
-                    // В поле вершин указываем, что текущая вершина уже высчитана
-                    vertices.get(row).set(column, vertex);
+                    // Указываем, что из текущей вершины есть путь
+                    vertex.isThereWay = true;
                 }
             }
         };
 
+        // Проверка правой вершины
+        biConsumer.accept(row, column + step);
+
         // Проверка нижней вершины
         biConsumer.accept(row + step, column);
 
-        // Проверка правой вершины
-        biConsumer.accept(row, column + step);
+        // Указываем, что текущая вершина уже высчитана
+        // O(1) в среднем
+        vertices.put(new Pair<>(row, column), vertex);
     }
 
-    // Время - O(M)
+    // Время - O(N)
     // Память - O(M)
-    // M - суммарное число ячеек во всех вычисленных путях
+    // N - Количество ячеек, которые являются частью хотя бы одного из путей
+    // M - Суммарная длина всех путей
     private void createWaysOnBaseOfVertices(Vertex vertex, ArrayList<Cell> way) {
         int row = vertex.row;
         int column = vertex.column;
@@ -138,7 +153,7 @@ public class CustomAlgorithm implements AlgorithmCommitments {
         way.add(field.getCell(row, column));
 
         // Если текущая вершина является конечной
-        if(row == vertices.size() - 1 && column == vertices.get(0).size() - 1) {
+        if(row == height - 1 && column == width - 1) {
             ways.add(way);
             return;
         }
