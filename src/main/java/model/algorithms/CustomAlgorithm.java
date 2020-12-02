@@ -141,9 +141,8 @@ public class CustomAlgorithm implements AlgorithmCommitments {
         vertices.put(new Pair<>(row, column), vertex);
     }
 
-    // Время - O(N)
+    // Время - O(M)
     // Память - O(M)
-    // N - Количество ячеек, которые являются частью хотя бы одного из путей
     // M - Суммарная длина всех путей
     private void createWaysOnBaseOfVertices(Vertex vertex, ArrayList<Cell> way) {
         int row = vertex.row;
@@ -169,7 +168,7 @@ public class CustomAlgorithm implements AlgorithmCommitments {
             // Тогда можно считать, что в памяти остаются только такие ArrayList'ы, что
             // каждый из них представляет собой последовательность ячеек для конкретного пути.
             // В таком случае затраты по памяти можно оценить как O(M),
-            // где M - суммарное число ячеек во всех вычисленных путях.
+            // где M - суммарная длина всех путей
         }
     }
 }
